@@ -41,3 +41,5 @@ pidfile
 
 #DOT.ENV for devel
 .env
+
+yarn.lock
