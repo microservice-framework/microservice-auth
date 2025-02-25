@@ -30,14 +30,6 @@ let mservice = new Microservice({
 
 new Cluster({
   singleton: RegisterLoader,
-  init: function (callback) {
-    callback({ test: 1 });
-    console.log('init');
-  },
-  shutdown: function (init) {
-    console.log('shutdown', init);
-    process.exit(0);
-  },
   validate: async function (method, data, request) {
     debug.debug('request', request);
     let accessToken = false;
@@ -96,7 +88,7 @@ new Cluster({
       } else {
         data.expireAt = Date.now() + data.ttl * 1000;
       }
-      var searchToken = {
+      let searchToken = {
         accessToken: data.accessToken,
       };
       let response = await mservice.search(searchToken, request);
@@ -188,8 +180,27 @@ new Cluster({
   },
 });
 
+const cleanupExpired = async function () {
+  debug.debug('cleanup tokens');
+  let searchToken = {
+    expireAt: { $lt: Date.now() },
+  };
+  let request = {
+    headers: {},
+  };
+  let response = await mservice.search(searchToken, request);
+  if (response.code != 404) {
+    for (let token of response.answer) {
+      debug.debug('found token %O', token);
+      let deleteResponse = await mservice.delete(token.accessToken, request);
+      debug.debug('deleted token %O', deleteResponse);
+    }
+  }
+};
+
 function RegisterLoader(isStart, variables) {
   let cluster = this;
+  debug.debug('RegisterLoader');
   if (isStart) {
     let register = new ClientRegister({
       route: {
@@ -205,8 +216,13 @@ function RegisterLoader(isStart, variables) {
       },
       cluster: cluster.cluster,
     });
-    variables({ register: register });
+    let interval = setInterval(() => {
+      cleanupExpired();
+    }, process.env.ROUTER_PERIOD);
+    variables({ register: register, interval: interval });
   } else {
+    debug.debug('stop cleaner');
+    clearInterval(variables.interval);
     variables.register.shutdown();
   }
 }
