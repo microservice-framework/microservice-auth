@@ -1,5 +1,4 @@
-import { ClientRegister } from '../index.js';
-
+import { ClientRegister } from '@microservice-framework/microservice-router-register';
 import Microservice from '@microservice-framework/microservice';
 import Cluster from '@microservice-framework/microservice-cluster';
 import debugF from 'debug';
@@ -21,6 +20,12 @@ let mservice = new Microservice({
   schema: process.env.SCHEMA,
   mongoTable: process.env.MONGO_TABLE,
   secureKey: process.env.SECURE_KEY,
+  id: {
+    title: 'access_token',
+    field: 'accessToken',
+    type: 'string',
+    description: 'Generated access token.',
+  },
 });
 
 new Cluster({

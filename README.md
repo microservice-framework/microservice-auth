@@ -1,6 +1,5 @@
 # microservice-auth
 
-[![Gitter](https://img.shields.io/gitter/room/microservice-framework/chat.svg?style=flat-square)](https://gitter.im/microservice-framework/chat)
 [![npm](https://img.shields.io/npm/dt/@microservice-framework/microservice-auth.svg?style=flat-square)](https://www.npmjs.com/~microservice-framework)
 [![microservice-frame.work](https://img.shields.io/badge/online%20docs-200-green.svg?style=flat-square)](http://microservice-frame.work)
 
@@ -47,10 +46,10 @@ client.post({
         }
       }
     ]
-  }, function(err, handlerResponse){
+  }, then((response) => {
     console.log(err);
-    console.log(JSON.stringify(handlerResponse , null, 2));
-});
+    console.log(JSON.stringify(response , null, 2));
+}));
 
 ```
 
@@ -64,3 +63,4 @@ client.post({
 
 - 1.3.5 - fix 'access-token' validation
 - 1.3.6 - add scope output on token GET
+- 3.0.0 - use latest microservice 3.x
