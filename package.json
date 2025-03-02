@@ -1,12 +1,12 @@
 {
   "name": "@microservice-framework/microservice-auth",
-  "version": "3.0.0",
+  "version": "3.0.3",
   "description": "Microservice framework auth service.",
   "main": "microservice-auth.js",
   "type": "module",
   "scripts": {
     "test": "node_modules/.bin/mocha --timeout 15000",
-    "start": "DEBUG=http:log,cluster:* node  --max-old-space-size=48 microservice-auth.js",
+    "start": "DEBUG=http:log,cluster:*,*.log node  --max-old-space-size=48 microservice-auth.js",
     "stop": "node kill.js",
     "status": "node status.js",
     "lint": "eslint --fix",
