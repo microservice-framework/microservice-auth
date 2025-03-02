@@ -28,8 +28,19 @@ let mservice = new Microservice({
   },
 });
 
-new Cluster({
-  singleton: RegisterLoader,
+const cluster = new Cluster({
+  singleton: function(isStart, variables) {
+    if (isStart) {
+      let interval = setInterval(() => {
+        cleanupExpired();
+      }, process.env.CLEANUP_PERIOD);
+      variables({ interval: interval });
+      return
+    }
+    
+    debug.debug('stop cleaner');
+    clearInterval(variables.interval);
+  },
   validate: async function (method, data, request) {
     debug.debug('request', request);
     let accessToken = false;
@@ -76,6 +87,9 @@ new Cluster({
     return true;
   },
   methods: {
+    IPM: function(){
+
+    },
     POST: async function (data, request) {
       if (!data.accessToken) {
         data.accessToken = await tokenGenerate(24);
@@ -198,31 +212,18 @@ const cleanupExpired = async function () {
   }
 };
 
-function RegisterLoader(isStart, variables) {
-  let cluster = this;
-  debug.debug('RegisterLoader');
-  if (isStart) {
-    let register = new ClientRegister({
-      route: {
-        path: [process.env.SELF_PATH],
-        url: process.env.SELF_URL,
-        secureKey: process.env.SECURE_KEY,
-        provides: {
-          ':access_token': {
-            field: 'accessToken',
-            type: 'number',
-          },
-        },
+// Register need to start on all instances and collect data to master
+new ClientRegister({
+  route: {
+    path: [process.env.SELF_PATH],
+    url: process.env.SELF_URL,
+    secureKey: process.env.SECURE_KEY,
+    provides: {
+      ':access_token': {
+        field: 'accessToken',
+        type: 'number',
       },
-      cluster: cluster.cluster,
-    });
-    let interval = setInterval(() => {
-      cleanupExpired();
-    }, process.env.ROUTER_PERIOD);
-    variables({ register: register, interval: interval });
-  } else {
-    debug.debug('stop cleaner');
-    clearInterval(variables.interval);
-    variables.register.shutdown();
-  }
-}
+    },
+  },
+  cluster: cluster.cluster,
+});

@@ -1,6 +1,10 @@
 'use strict';
-const fs = require('fs');
-require('dotenv').config();
+import fs from 'fs';
+
+// Load environment variables from .env file
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 var pid = false;
 if (process.env.PIDFILE) {
@@ -10,5 +14,5 @@ if (process.env.PIDFILE) {
 }
 
 var result = {};
-result[process.env.npm_package_name] = pid;
+result[process.env.npm_package_name] = parseInt(pid);
 console.log(JSON.stringify(result));

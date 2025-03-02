@@ -1,10 +1,14 @@
 'use strict';
-const fs = require('fs');
-require('dotenv').config();
+import fs from 'fs';
+
+// Load environment variables from .env file
+import dotenv from 'dotenv';
+dotenv.config();
+
 
 if (process.env.PIDFILE) {
   try {
     var pid = fs.readFileSync(process.env.PIDFILE);
-    process.kill(pid, 'SIGINT');
+    process.kill(parseInt(pid), 'SIGINT');
   } catch (e) {}
 }

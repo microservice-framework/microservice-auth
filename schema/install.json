@@ -74,6 +74,12 @@
       "default": 3000,
       "required": true
     },
+    "cleanup_period": {
+      "type": "number",
+      "description": "How often report to router (ms)",
+      "default": 3000000,
+      "required": true
+    },
     "scope": {
       "type": "string",
       "description": "Scope",

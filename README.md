@@ -64,3 +64,6 @@ client.post({
 - 1.3.5 - fix 'access-token' validation
 - 1.3.6 - add scope output on token GET
 - 3.0.0 - use latest microservice 3.x
+- 3.0.1 - typo fix
+- 3.0.2 - typo fix
+- 3.0.3 - fix stop/start scripts
