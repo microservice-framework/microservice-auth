@@ -64,7 +64,7 @@ const cluster = new Cluster({
 
     let response = await mservice.get(request.url, request);
     if (response.error) {
-      return response.error;
+      return response;
     }
 
     let item = response.answer;
@@ -81,7 +81,10 @@ const cluster = new Cluster({
     }
     if (!methods[method.toLowerCase()]) {
       debug.debug('Request:%s denied', method);
-      return new Error('Access denied');
+      return {
+        code: 403, 
+        error: new Error('Access denied')
+      }
     }
     // Access Validated
     return true;
@@ -116,7 +119,7 @@ const cluster = new Cluster({
     GET: async function (accessToken, request) {
       let response = await mservice.get(accessToken, request);
       if (response.error) {
-        return response.error;
+        return response;
       }
       if (accessToken == request.headers['access-token']) {
         delete response.answer.token;

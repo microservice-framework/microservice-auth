@@ -67,3 +67,5 @@ client.post({
 - 3.0.1 - typo fix
 - 3.0.2 - typo fix
 - 3.0.3 - fix stop/start scripts
+- 3.0.4 - fix error handling
+        - fix mongo_db instal field 
